@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="UTF-8">
+	<meta name="author" content="auw46">
+	<title>fight!</title>
+
+	<style>
+		@import url('https://fonts.googleapis.com/css?family=Montserrat:500');
+		body {margin: 0px; height: 100vh; width: 100vw;}
+		.container {display: flex; flex-direction: row; justify-content: center; align-items: center; height: 100%;}
+		.subleft {display: flex; flex-direction: column; align-items: center; margin: 5%; font-size: 2em}
+		.section {padding: 15px 30px;}
+		.border {border: 1px solid grey; border-radius: 7px;}
+		.border:hover {border-color: silver;}
+		#leftup {cursor: pointer; user-select: none;}
+		#rightup {cursor: pointer; user-select: none;}
+		body {font-family: 'Montserrat', sans-serif; font-size: 20px;}
+	</style>
+
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	<script>
+		var socket = io();
+	</script>
+
+</head>
+<body>
+	<div class="container">
+		<div class="subleft">
+			<div id="leftcounter" class="section">0</div>
+			<div id="leftup" class="section border">left</div>
+		</div>
+
+		<div class="subleft">
+			<div id="rightcounter" class="section">0</div>
+			<div id="rightup" class="section border">right</div>
+		</div>
+
+
+	</div>
+
+	<script>
+	var left = 0;
+	var right = 0;
+
+	var dong = function() {
+		$.get('/counter', function( data ) {
+			console.log('left = ' + data.left, '. right = ' + data.right);
+			document.getElementById('leftcounter').innerHTML = data.left;
+			document.getElementById('rightcounter').innerHTML = data.right;
+		})
+	};
+
+	dong();
+
+	$( "#leftup" ).click(function() {
+		left = left + 1;
+		console.log('left clicked');
+		socket.emit('left_up');
+	});
+
+	$( "#rightup" ).click(function() {
+		right = right + 1;
+		console.log('right clicked');
+		socket.emit('right_up');
+	});
+
+	socket.on('left_up', function(left) {
+		document.getElementById('leftcounter').innerHTML = left;
+	});
+
+	socket.on('right_up', function(right) {
+		document.getElementById('rightcounter').innerHTML = right;
+	});
+
+	</script>
+
+</body>
+</html>
